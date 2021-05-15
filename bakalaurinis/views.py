@@ -16,6 +16,6 @@ def dashboard(request):
         'product':total_product,
         'supplier':total_suppliers,
         'categories':total_categories,
-        'messages':total_subCategories
+        'message':total_subCategories
             }
     return render(request, 'users/dashboard.html', context)

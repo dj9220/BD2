@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView
 from django.http import HttpResponse
 from . import models as models
@@ -9,7 +10,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from .serializers import ProductSerializer
 import json
+import csv, io
 from django.contrib import messages
+import pandas as pd
 # Create your views here.
 
 class IndexClassView(ListView):
@@ -42,27 +45,25 @@ def editProduct(request,id):
     productForm = form.ProductForm(request.POST or None, instance=product)
     if productForm.is_valid():
         productForm.save()
-        messages.add_message(request,f'Produktas {product.name} sėkmingai pakeistas')
+        messages.success(request, f'Produktas sėkmingai pakeistas')
         return redirect('shop:all_products')
     return render(request,'shop/Product form.html',{'form':productForm, 'product':product})
 
 @login_required
 def create_product(request):
-    forms = form.ProductForm()
-    if request.method=='POST':
-        forms = form.ProductForm(request.POST)
-        if forms.is_valid():
-            forms.save()
-            name = forms.cleaned_data.get('name')
-            messages.success(request,f'Produktas {name} pridėtas')
-            return redirect('shop:all_products')
-    return render(request, 'shop/Product form.html', {'form': forms})
+    form1 = form.ProductForm(request.POST or None)
+    if form1.is_valid():
+        form1.save()
+        messages.success(request, f'Produktas sėkmingai sukurtas')
+        return redirect('shop:all_products')
+    return render(request, 'shop/Product form.html', {'form':form1})
 
 @login_required(login_url='users:login')
 def delete_product(request,id):
     product = models.Product.objects.get(id=id)
     if request.method=='POST':
         product.delete()
+        messages.success(request, f'Produktas sėkmingai panaikintas')
         return redirect('shop:all_products')
     return render(request,'shop/delete-product.html', {'product':product})
 
@@ -81,6 +82,7 @@ def create_supplier(request):
         forms = form.SupplierForm(request.POST)
         if forms.is_valid():
             forms.save()
+            messages.success(request,f'Tiekėjas sėkmingai sukurtas')
             return redirect('shop:suppliers')
     return render(request,'shop/SupplierForm.html',{'form':forms})
 @login_required
@@ -95,22 +97,38 @@ def SendMail(request, id):
             subject = forms.cleaned_data['subject']
             message = forms.cleaned_data['message']
             send_mail(subject,message,fromemail,[supp.email,fromemail])
+            messages.success(request,f'Laiškas sėkmingai išsiųstas')
+            return redirect('shop:suppliers')
     return render(request,'shop/Email-page.html', {'form':forms})
 
 @login_required
 def edit_productQuantity(request, id):
-    requestData = json.loads(request.body)
-    product = models.Product.objects.get(id=id)
-    productSerializer = ProductSerializer(data=product, instance=requestData)
-    print(requestData)
+   if request.is_ajax() and request.method == 'POST':
+       product = get_object_or_404(models.Product, pk = id)
+       product.quantity+=1
+       product.save()
+       return HttpResponse(product.quantity)
+   else:
+       return redirect('shop:all_products')
 
-    if productSerializer.is_valid():
-        result = productSerializer.save()
-        return JsonResponse(result.data)
-    return JsonResponse({'error':'failed'}, status=400)
 @login_required
 def product_in_catalog(request, id):
     product = models.Product.objects.get(id=id)
     return render(request, 'shop/product_in_catalog.html.html', {'product':product})
 
+@login_required
+def create_check(request):
+    forms = form.CheckForm(request.POST or None)
+    if forms.is_valid():
+        forms.save()
+        return redirect('shop:all_products')
+    return render(request,'shop/CheckForm.html',{'form':forms})
 
+@login_required
+def import_csv(request):
+    file = pd.read_csv('checks/shop/check1.csv', delimiter=',')
+    products = []
+    for i in range(len(file)):
+        products.append(models.Check(
+            product=file.iloc[i][0]
+        ))

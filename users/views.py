@@ -9,23 +9,25 @@ from django.views import View
 from .models import Profile, Message
 
 # Create your views here.
-from users.forms import RegisterForm, LoginForm, MessageForm, ProfileForm
+from users.forms import MessageForm, ProfileForm, LoginForm
 from django.contrib import messages
 
+
 def login_page(request):
-        forms = LoginForm()
-        if request.method == 'POST':
-            forms = LoginForm(request.POST)
-            if forms.is_valid():
-                username = forms.cleaned_data['username']
-                password = forms.cleaned_data['password']
-                user = authenticate(username=username, password=password)
-                messages.success(request,f'Sveiki atvykę')
-                if user:
-                    login(request, user)
-                    return redirect('dashboard')
-        context = {'form': forms}
-        return render(request, 'users/login.html', context)
+    forms = LoginForm()
+    if request.method == 'POST':
+        forms = LoginForm(request.POST)
+        if forms.is_valid():
+            username = forms.cleaned_data['username']
+            password = forms.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            messages.success(request, f'Sveiki atvykę')
+            if user:
+                login(request, user)
+                return redirect('dashboard')
+    context = {'form': forms}
+    return render(request, 'users/login.html', context)
+
 
 def logout_page(request):
     logout(request)
@@ -43,6 +45,7 @@ def write_message(request):
             form = form.save(commit=False)
             form.sender = request.user
             form.save()
+            messages.success(request, f'Skelbimas sėkmingai paskelbtas')
             return redirect('inbox')
     else:
         form = MessageForm()

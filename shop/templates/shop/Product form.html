@@ -1,30 +1,25 @@
 {% extends 'shop/base.html' %}
 {% block body %}
-
         <form method="post">
         {% csrf_token %}
   <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Produkto pavadinimas</label>
+    <label  class="form-label">Produkto pavadinimas</label>
                 {{ form.name }}
   </div>
   <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Kiekis</label>
+    <label  class="form-label">Kiekis</label>
                 {{ form.quantity }}
   </div>
 <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Subkategorija</label>
+    <label  class="form-label">Subkategorija</label>
                 {{ form.subCategory }}
   </div>
 <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Tiekėjas</label>
+    <label  class="form-label">Tiekėjas</label>
                 {{ form.supplier }}
   </div>
-            <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Nuotrauka</label>
-                {{ form.image }}
-  </div>
 <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Kaina</label>
+    <label class="form-label">Kaina</label>
                 {{ form.price }}
   </div>
   <button type="submit" class="btn btn-primary">Pridėti</button>

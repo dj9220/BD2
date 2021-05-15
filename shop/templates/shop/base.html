@@ -5,8 +5,21 @@
     <link rel="stylesheet" href="{% static 'food/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-    <title>ŽRPIS</title>
 
+    <title>ŽRPIS</title>
+<script>
+   $(".upqt").click(function (){
+       var postData = {csrfmiddlewaretoken: '{{ csrf_token }}'}
+       $.ajax({
+           type:"POST",
+           url: {% url 'editQuantityUp' product_id %},
+           data: postData,
+           success: function (new_quantity){
+               $(this).html(new_quantity)
+           }
+       })
+   })
+</script>
 </head>
 <body>
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -39,6 +52,7 @@
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'shop:suppliers' %}">Tiekėjų sąrašas</a></li>
               <li><a class="dropdown-item" href="{% url 'shop:create_supplier' %}">Pridėti tiekėją</a></li>
+              <li><a class="dropdown-item" href="{% url 'shop:add_check' %}">Pridėti sąskaitą</a></li>
           </ul>
         </li>
 
@@ -75,7 +89,15 @@
     </div>
   </div>
 </nav>
+    {% if messages is not None %}
+          <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+      {% endif %}
       {% block body %}
+
     {% endblock %}
 </body>
 </html>

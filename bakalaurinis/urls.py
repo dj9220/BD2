@@ -19,12 +19,13 @@ from users import views as user_views
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import dashboard
-
+from shop import views as shopviews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', dashboard, name='dashboard'),
     path('shop/',include('shop.urls')),
     path('users/', include('users.urls')),
+path(r'^product/(?P<product_id>\w+)/upquantity', shopviews.edit_productQuantity, name='editQuantityUp'),
    ]
 
 

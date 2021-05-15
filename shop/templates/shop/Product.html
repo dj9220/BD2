@@ -3,7 +3,6 @@
 <body>
 {% block body %}
 <div class="table-responsive-sm">
-    {% if user.is_authenticated %}
           <caption>Produktų sąrašas</caption>
             <table class="table">
               <thead>
@@ -24,7 +23,7 @@
                     <tr>
                       <th scope="row">{{ prod.id }}</th>
                       <td>{{ prod.name }}</td>
-                      <td>{{ prod.quantity }}</td>
+                      <td><button id="minus">-</button>{{ prod.quantity }}<button id="plus" onclick="plusQuantity()">+</button></td>
                         <td>{{ prod.price }}</td>
                         <td>{{ prod.subCategory.name }}</td>
                         <td>{{ prod.supplier.name }}</td>
@@ -35,7 +34,7 @@
             {% endfor %}
             </table>
           </div>
-    {% endif %}
+
 {% endblock %}
 </body>
 </html>

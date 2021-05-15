@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 # Create your models here.
 from django.urls import reverse
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -29,11 +29,11 @@ class SubCategories(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
-    quantity = models.FloatField(default=0)
+    quantity = models.PositiveIntegerField(default=0)
     subCategory = models.ForeignKey(SubCategories,on_delete=models.CASCADE)
     supplier = models.ForeignKey(Supplier,on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images')
-    price = models.FloatField(default=0)
+    image = models.ImageField(upload_to='images', null=True)
+    price = models.DecimalField(max_digits=18, decimal_places=2)
     def __str__(self):
         return self.name
     def get_absolute_url(self):
@@ -42,6 +42,14 @@ class Product(models.Model):
         queryset = self._meta.model.objects.all()
         return queryset
 
+class Check(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0, validators=[MaxValueValidator(200),MinValueValidator(0)])
+    price = models.FloatField(default=0, validators=[MaxValueValidator(200.00),MinValueValidator(0.01)])
 
-
-
+    def __str__(self):
+        return self.product.name
+    def save(self, *args, **kwargs):
+        self.product.quantity +=self.quantity
+        self.product.save()
+        super(Check,self).save(*args,**kwargs)
