@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'carts',
     'users.apps.UsersConfig',
     'shop.apps.ShopConfig',
     'django.contrib.admin',
@@ -41,8 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework'
-]
+    'rest_framework',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +58,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bakalaurinis.urls'
+
 
 TEMPLATES = [
     {
@@ -152,3 +154,7 @@ LOGIN_REDIRECT_URL = 'shop:index'
 LOGIN_URL = 'login'
 MEDIA_ROOT= os.path.join(BASE_DIR, 'pictures')
 MEDIA_URL = '/pictures/'
+CART_SESSION_ID = 'cart'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]

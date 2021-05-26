@@ -18,4 +18,5 @@ urlpatterns = [
     path('subcategory_products/<int:id>/', views.products_by_subcategory, name='subcategoryProducts'),
     path('product/<int:id>', views.product_in_catalog, name = 'product_in_catalog'),
     path('add_check/', views.create_check, name = 'add_check'),
+    path('plus_quantity/<int:id>/', views.up_quantity, name = 'plus_quantity')
 ]

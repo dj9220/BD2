@@ -132,3 +132,23 @@ def import_csv(request):
         products.append(models.Check(
             product=file.iloc[i][0]
         ))
+
+@login_required
+def create_full_check(request):
+    forms = form.CheckCheckForm(request.POST or None)
+    if forms.is_valid():
+        forms.price_total+=forms.products.price
+        forms.save()
+        messages.success(request, f'Prideta')
+        return redirect('dashboard')
+    return render(request, 'shop/CheckCheckForm.html', {'form':forms})
+
+@login_required
+def up_quantity(request, id):
+    product = models.Product.objects.get(id=id)
+    if request.method == 'POST':
+        product.quantity = product.quantity +1
+        product.save(update_fields=['quantity'])
+        return redirect('shop:all_products')
+    else:
+        return redirect('dashboard')

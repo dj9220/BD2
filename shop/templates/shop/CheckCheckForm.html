@@ -1,0 +1,23 @@
+{% extends 'shop/base.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% block body %}
+        <form method="post">
+        {% csrf_token %}
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Produkto pavadinimas</label>
+                {{ form.product }}
+  </div>
+
+  <button type="submit" class="btn btn-primary">Pridėti</button>
+</form>
+
+
+</div>
+    {% endblock %}
+</body>
+</html>

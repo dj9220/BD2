@@ -15,6 +15,8 @@
                     <th scope="col">Tiekėjas</th>
                     <th scope="col">Redaguoti</th>
                     <th scope="col">Trinti</th>
+                    <th scope="col">Pridėti į krepšelį</th>
+
                 </tr>
               </thead>
 
@@ -23,12 +25,17 @@
                     <tr>
                       <th scope="row">{{ prod.id }}</th>
                       <td>{{ prod.name }}</td>
-                      <td><button id="minus">-</button>{{ prod.quantity }}<button id="plus" onclick="plusQuantity()">+</button></td>
+                        <td>{{ prod.quantity }}</td>
                         <td>{{ prod.price }}</td>
                         <td>{{ prod.subCategory.name }}</td>
                         <td>{{ prod.supplier.name }}</td>
                         <td><a href="{% url 'shop:edit_product' prod.id %}"><button type="button" class="btn btn-primary" >Redaguoti</button> </a></td>
                         <td><a href="{% url 'shop:delete_product' prod.id %}"><button type="button" class="btn btn-primary" >Trinti</button> </a></td>
+                        <td><form class="form pull-right" method="GET" action="{% url 'update_cart' prod.id %}">
+                            <input name="qty" type="number">
+                            <input type="submit" value="Pridėti į krepšelį">
+                        </form></td>
+
                     </tr>
                 </tbody>
             {% endfor %}

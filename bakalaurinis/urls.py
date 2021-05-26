@@ -25,7 +25,7 @@ urlpatterns = [
     path('', dashboard, name='dashboard'),
     path('shop/',include('shop.urls')),
     path('users/', include('users.urls')),
-path(r'^product/(?P<product_id>\w+)/upquantity', shopviews.edit_productQuantity, name='editQuantityUp'),
+    path('cart/', include('carts.urls')),
    ]
 
 

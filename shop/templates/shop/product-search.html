@@ -7,6 +7,7 @@
 </head>
 <body>
     {% block body %}
+        {% if results %}
          <div class="table-responsive-sm">
           <caption>List of products</caption>
             <table class="table">
@@ -20,6 +21,7 @@
                     <th scope="col">Tiekėjas</th>
                     <th scope="col">Redaguoti</th>
                     <th scope="col">Trinti</th>
+                    <th scope="col">Pridėti į krepšelį</th>
                 </tr>
               </thead>
         {% for prod in results %}
@@ -33,9 +35,16 @@
                         <td>{{ prod.supplier.name }}</td>
                         <td><a href="{% url 'shop:edit_product' prod.id %}"><button type="button" class="btn btn-primary" >Redaguoti</button> </a></td>
                         <td><a href="{% url 'shop:delete_product' prod.id %}"><button type="button" class="btn btn-primary" >Trinti</button> </a></td>
+                        <td><form class="form pull-right" method="GET" action="{% url 'update_cart' prod.id %}">
+                            <input name="qty" type="number">
+                            <input type="submit" value="Pridėti į krepšelį">
+                        </form></td>
                     </tr>
                 </tbody>
         {% endfor %}
+            {% else %}
+            <h1 style="text-align:center">Tokio produkto nerasta</h1>
+        {% endif %}
     {% endblock %}
 </body>
 </html>

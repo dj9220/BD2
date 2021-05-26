@@ -1,0 +1,47 @@
+{% extends 'shop/base.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block body %}
+    {% if empty %}
+    <h1 style="text-align:center">{{ empty_message }}</h1>
+    {% else %}
+        <div class="table-responsive-sm">
+          <caption class="text-center" style="size: 20px">Pirkinių krepšelis</caption>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Produktas</th>
+                  <th scope="col">Kaina (eur)</th>
+                  <th scope="col">Kiekis (vnt.)</th>
+                   <th scope="col">Pašalinti iš krepšelio</th>
+                </tr>
+              </thead>
+
+    {% for item in cart.cartitem_set.all %}
+        <tbody>
+                    <tr>
+                      <th scope="row">{{ item.product.name }}</th>
+                      <td>{{ item.product.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td><a href="{% url 'update_cart' item.product.id %}?qty=0" ><button type="button" class="btn btn-primary" >Pašalinti</button> </a></td>
+                    </tr>
+                </tbody>
+
+      {% endfor %}
+    </table>
+      <tfoot>
+    <tr>
+      <td>Iš viso: {{ cart.total }} eur</td>
+      <td><a href="{% url 'checkout' %}"><button type="button" class="btn btn-primary" >Atlikti mokėjimą</button> </a></td>
+    </tr>
+  </tfoot>
+
+        </div>
+    {% endif %}
+{% endblock %}
+</body>
+</html>

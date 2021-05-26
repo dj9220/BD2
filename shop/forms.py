@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Supplier, Check
+from .models import Product, Supplier, Check, ProductInCheck
 
 
 class ProductForm(forms.ModelForm):
@@ -16,5 +16,9 @@ class SendEmailForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea,required=True)
 class CheckForm(forms.ModelForm):
     class Meta:
-        model=Check
+        model= ProductInCheck
         fields=['product','quantity','price']
+class CheckCheckForm(forms.ModelForm):
+    class Meta:
+        model=Check
+        exclude=['price_total',]

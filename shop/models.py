@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 # Create your models here.
+from django.db.models import Sum
 from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -42,14 +43,20 @@ class Product(models.Model):
         queryset = self._meta.model.objects.all()
         return queryset
 
-class Check(models.Model):
+class ProductInCheck(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0, validators=[MaxValueValidator(200),MinValueValidator(0)])
-    price = models.FloatField(default=0, validators=[MaxValueValidator(200.00),MinValueValidator(0.01)])
+    price = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(0.00)])
 
     def __str__(self):
         return self.product.name
     def save(self, *args, **kwargs):
         self.product.quantity +=self.quantity
         self.product.save()
-        super(Check,self).save(*args,**kwargs)
+        super(ProductInCheck,self).save(*args,**kwargs)
+
+class Check(models.Model):
+    products = models.ManyToManyField(ProductInCheck)
+    price_total = models.DecimalField(decimal_places=2, null=True, max_digits=10, validators=[MinValueValidator(0.00)])
+
+
